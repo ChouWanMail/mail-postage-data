@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 7,
+  "schemaVersion": 8,
   "standardVersion": "1.5.0",
   "scopeValues": {
     "domestic": "中国大陆境内寄递。",
@@ -29,6 +29,14 @@
     "maximumInsuredValue": 20000,
     "domestic": "国内信函保价要求 REGISTRATION_FEE。",
     "internationalAndHmt": "国际/港澳台保价要求 INSURED_LETTER_HANDLING_FEE，该手续费替代独立 REGISTRATION_FEE。"
+  },
+  "internationalZoneResolution": {
+    "explicitCountryFields": ["countries", "countryCodes", "destinations", "destinationCodes"],
+    "defaultZoneRule": "规范消费者可在未命中显式路向时使用 isDefault=true 的 zone；为兼容旧客户端，默认 zone 同时显式列出可解析的 ISO 3166-1 alpha-2 国家/地区代码。",
+    "excludedDestinationsOverride": "excludedDestinations 优先于任何显式 countries/destinations 或默认 zone。",
+    "postalDestinations": "非独立 ISO 国家代码的邮政目的地保存在 postalDestinations；为兼容只读取字符串数组的旧客户端，同一 zone 同时提供 destinations，列出完全相同的 postalDestinations.id。",
+    "compatibilityInvariant": "postalDestinations[].id 与 destinations 中对应的邮政目的地 ID 必须保持一致；默认 zone 的显式 countries 不改变其 isDefault 规范语义。",
+    "availabilityDisclaimer": "路向出现在资费 zone 仅表示可解析资费，不代表当前实际收寄可用性。"
   },
   "specialServiceRules": {
     "spec": "postage/spec/special-services.json",
