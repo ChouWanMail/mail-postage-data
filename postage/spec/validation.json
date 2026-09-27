@@ -1,10 +1,15 @@
 {
-  "schemaVersion": 7,
+  "schemaVersion": 8,
   "standardVersion": "1.5.0",
   "purpose": "定义 App、Web 或 CI 在读取邮资数据前应执行的跨文件一致性与交互状态检查。",
   "checks": [
     {"id":"STANDARD-VERSION-CONSISTENT","severity":"error","rule":"postage/index.json、services.json、spec 入口与声明 standardVersion 的模块入口必须兼容。"},
     {"id":"PRICING-TYPE-SUPPORTED","severity":"error","rule":"所有 pricing.type/pricingType 必须存在于 spec/pricing.json supportedTypes。"},
+    {"id":"INTL-DEFAULT-ZONE-EXPLICIT-COMPAT","severity":"error","rule":"为兼容旧客户端，国际 zone 中 isDefault=true 的默认组若用于现有 App，必须同时显式提供 countries/countryCodes/destinations/destinationCodes 之一；水陆路默认组不得只依赖 isDefault。"},
+    {"id":"INTL-DEFAULT-ZONE-EXCLUSIONS","severity":"error","rule":"默认国际路向的显式国家/地区映射不得包含 excludedDestinations；当前国际范围必须排除 CN、HK、MO、TW。"},
+    {"id":"INTL-POSTAL-DESTINATION-COMPAT","severity":"error","rule":"包含 postalDestinations 的 zone 必须同时提供 destinations 字符串数组，且 destinations 必须覆盖全部 postalDestinations[].id，供旧客户端 findZone 解析。"},
+    {"id":"SURFACE-LETTER-COMPLETE-MAPPING","severity":"error","rule":"surface-letter 第一组27个明确路向与第二组显式 countries 合并后，应覆盖国际 ISO 3166-1 alpha-2 路向集合（排除 CN、HK、MO、TW），且两组不得重复。"},
+    {"id":"SURFACE-OTHER-COMPLETE-MAPPING","severity":"error","rule":"surface-other-mail 默认组应显式列出国际 ISO 3166-1 alpha-2 国家/地区代码集合（排除 CN、HK、MO、TW），同时保留 isDefault=true。"},
     {"id":"DISPLAY-ONLY-NO-CHECKBOX","severity":"error","rule":"selection.mode=display-only 的项目不得渲染为复选框，不得进入寄件计算，且 displayOrder=last 时必须排在可选项目之后。"},
     {"id":"DISPLAY-ONLY-ITEMS","severity":"error","rule":"国内存局候领、撤回/改址；国际/港澳台国际回信券、撤回/改址、进口欠资、存局候领、逾期保管、海关查验必须为 display-only。"},
     {"id":"DOMESTIC-POSTE-RESTANTE-NOT-PARCEL","severity":"error","rule":"国内存局候领不得适用于 DOMESTIC_ORDINARY_PARCEL 或 DOMESTIC_HOMETOWN_PARCEL_STICKER。"},
@@ -29,6 +34,7 @@
   ],
   "recommendedReadOrder": [
     "读取 postage/index.json、spec/index.json 与 services.json。",
+    "国际目的地解析优先匹配显式 countries/destinations；支持新规范的消费者可在未命中时使用 isDefault=true；旧客户端依赖显式映射。",
     "选择基础寄递服务并计算基础资费。",
     "普通包裹尺寸完整时计算实重/泡重两项基础资费并取较高者。",
     "普通包裹优惠只作用于基础资费。",
